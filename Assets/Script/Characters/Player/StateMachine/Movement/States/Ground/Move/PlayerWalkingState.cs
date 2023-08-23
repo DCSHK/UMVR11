@@ -18,7 +18,7 @@ namespace Movementsystem
         {
             base.Enter();
 
-            speedModifier = 0.225f;
+            stateMachine.ReusableDate.MovementSpeedModifier = 0.225f;
         }
         #endregion
         

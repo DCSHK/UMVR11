@@ -16,14 +16,14 @@ namespace Movementsystem
         {
             base.Enter();
 
-            speedModifier = 0f;
+            stateMachine.ReusableDate.MovementSpeedModifier = 0f;
             ResetVelocity();
         }
         public override void Update()
         {
             base.Update();
 
-            if (movementInput == Vector2.zero)
+            if (        stateMachine.ReusableDate.MovementInput == Vector2.zero)
             {
                 return;
             }

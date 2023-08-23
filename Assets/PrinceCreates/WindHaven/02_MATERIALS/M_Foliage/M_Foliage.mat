@@ -9,6 +9,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: M_Foliage
   m_Shader: {fileID: 4800000, guid: b9708e343f2ee8b4cb9316b7d659d81f, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -17,6 +19,7 @@ Material:
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -140,7 +143,7 @@ Material:
     - _alpha1: 0.55
     - _colorVariationTiling: 0.1
     - _cutout_Close: 0.6
-    - _cutout_FadeDistance: 50
+    - _cutout_FadeDistance: 100
     - _cutout_Far: 0.4
     - _dither: 0.15
     - _isGrass: 0

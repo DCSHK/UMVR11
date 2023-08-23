@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -9,27 +6,23 @@ namespace Movementsystem
     public class PlayerMovementState : IState
     {
         protected PlayerMovementStateMachine stateMachine;
-        protected Vector2 movementInput;
-        protected float baseSpeed = 5f;
-        protected float speedModifier = 1f;
 
-        protected Vector3 currentTargetRotation;
-        protected Vector3 timeToReachTargetRotation;
-        protected Vector3 dampedTargetRotationCurrentVelocity;
-        protected Vector3 dampedTargetRotationPassedTime;
+        protected PlayerGroundedDate movementDate;
 
-        protected bool shouldWalk;
-        private float rotationSpeed = 600f; //這行是後面加的
+
+        //private float rotationSpeed = 600f; //這行是後面加的
 
         public PlayerMovementState(PlayerMovementStateMachine playerMovementStateMachine)
         {
             stateMachine = playerMovementStateMachine;
+
+            movementDate = stateMachine.Player.Date.GroundedDate;
             InitializeDate();
         }
 
         private void InitializeDate()
         {
-            timeToReachTargetRotation.y = 0.14f;
+            stateMachine.ReusableDate.TimeToReachTargetRotation = movementDate.BaseRotationDate.TargetRotationReachTime;
         }
 
         public virtual void Enter()
@@ -64,11 +57,11 @@ namespace Movementsystem
         #region Main Methods
         public void ReadMovementInput()
         {
-            movementInput = stateMachine.Player.Input.PlayerActions.Movement.ReadValue<Vector2>();
+                    stateMachine.ReusableDate.MovementInput = stateMachine.Player.Input.PlayerActions.Movement.ReadValue<Vector2>();
         }
         private void Move()
         {
-            if (movementInput == Vector2.zero || speedModifier==0f) 
+            if (        stateMachine.ReusableDate.MovementInput == Vector2.zero || stateMachine.ReusableDate.MovementSpeedModifier==0f) 
             {
                 return;
             }
@@ -99,8 +92,8 @@ namespace Movementsystem
         }
         private void UpdateTargerRotationDate(float targetAngle)
         {
-            currentTargetRotation.y = targetAngle;
-            dampedTargetRotationPassedTime.y = 0f;
+            stateMachine.ReusableDate.CurrentTargetRotation.y = targetAngle;
+            stateMachine.ReusableDate.DampedTargetRotationPassedTime.y = 0f;
         }
         private float GetDirectionAngle(Vector3 direction)
         {
@@ -117,11 +110,11 @@ namespace Movementsystem
         #region Reuseable Methods
         protected Vector3 GetMovementInputDirection()
         {
-            return new Vector3(movementInput.x, 0f, movementInput.y);
+            return new Vector3(        stateMachine.ReusableDate.MovementInput.x, 0f,         stateMachine.ReusableDate.MovementInput.y);
         }
         protected float GetMovementSpeed()
         {
-            return baseSpeed * speedModifier;
+            return movementDate.BaseSpeed * stateMachine.ReusableDate.MovementSpeedModifier;
         }
         protected Vector3 GetPlayerHorizontalVelocity()
         {
@@ -132,29 +125,29 @@ namespace Movementsystem
 
         protected void RotateTowardsTargetRotation()
         {
-            float currentYAngle = stateMachine.Player.Rigidbody.rotation.eulerAngles.y;
-            float targetYAngle = currentTargetRotation.y;
-
-            // 計算角度差
-            float angleDifference = Mathf.Abs(Mathf.DeltaAngle(currentYAngle, targetYAngle));
-
-            // 設定合適的 rotationSpeed
-            float rotationSpeed = angleDifference / timeToReachTargetRotation.y * 3.05f;
-
-            Quaternion currentRotation = Quaternion.Euler(0f, currentYAngle, 0f);
-            Quaternion targetRotation = Quaternion.Euler(0f, targetYAngle, 0f);
-
-            Quaternion newRotation = Quaternion.RotateTowards(currentRotation, targetRotation, rotationSpeed * Time.deltaTime);
-            stateMachine.Player.Rigidbody.MoveRotation(newRotation);
             //float currentYAngle = stateMachine.Player.Rigidbody.rotation.eulerAngles.y;
-            //if (currentYAngle == currentTargetRotation.y)
-            //{
-            //    return;
-            //}
-            //float smoothedYAngle = Mathf.SmoothDampAngle(currentYAngle, currentTargetRotation.y, ref dampedTargetRotationCurrentVelocity.y , timeToReachTargetRotation.y , dampedTargetRotationPassedTime.y * 10000f);
-            //dampedTargetRotationPassedTime.y += Time.deltaTime;
-            //Quaternion targetRotation = Quaternion.Euler(0f, smoothedYAngle , 0f);
-            //stateMachine.Player.Rigidbody.MoveRotation(targetRotation);
+            //float targetYAngle = stateMachine.ReusableDate.CurrentTargetRotation.y;
+
+            //// 計算角度差
+            //float angleDifference = Mathf.Abs(Mathf.DeltaAngle(currentYAngle, targetYAngle));
+
+            //// 設定合適的 rotationSpeed
+            //float rotationSpeed = angleDifference / stateMachine.ReusableDate.TimeToReachTargetRotation.y * 3.05f;
+
+            //Quaternion currentRotation = Quaternion.Euler(0f, currentYAngle, 0f);
+            //Quaternion targetRotation = Quaternion.Euler(0f, targetYAngle, 0f);
+
+            //Quaternion newRotation = Quaternion.RotateTowards(currentRotation, targetRotation, rotationSpeed * Time.deltaTime);
+            //stateMachine.Player.Rigidbody.MoveRotation(newRotation);
+            float currentYAngle = stateMachine.Player.Rigidbody.rotation.eulerAngles.y;
+            if (currentYAngle == stateMachine.ReusableDate.CurrentTargetRotation.y)
+            {
+                return;
+            }
+            float smoothedYAngle = Mathf.SmoothDampAngle(currentYAngle, stateMachine.ReusableDate.CurrentTargetRotation.y, ref stateMachine.ReusableDate.DampedTargetRotationCurrentVelocity.y, stateMachine.ReusableDate.TimeToReachTargetRotation.y, stateMachine.ReusableDate.DampedTargetRotationPassedTime.y * 10000f);
+            stateMachine.ReusableDate.DampedTargetRotationPassedTime.y += Time.deltaTime;
+            Quaternion targetRotation = Quaternion.Euler(0f, smoothedYAngle, 0f);
+            stateMachine.Player.Rigidbody.MoveRotation(targetRotation);
         }
 
         protected float UpdateTargetRotation(Vector3 direction, bool shouldConsiderCameraRotatoion = true)
@@ -167,7 +160,7 @@ namespace Movementsystem
 
             
 
-            if (directionAngle != currentTargetRotation.y)
+            if (directionAngle != stateMachine.ReusableDate.CurrentTargetRotation.y)
             {
                 UpdateTargerRotationDate(directionAngle);
             }
@@ -198,7 +191,7 @@ namespace Movementsystem
         #region Input Methobs
         protected virtual void OnWalkToggleStarted(InputAction.CallbackContext context)
         {
-            shouldWalk = !shouldWalk;
+            stateMachine.ReusableDate.shouldWalk = !stateMachine.ReusableDate.shouldWalk;
         }
         #endregion
     }

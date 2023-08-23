@@ -29,7 +29,7 @@ public class PlayerGroundedState : PlayerMovementState
 
     protected virtual void OnMove()
     {
-        if (shouldWalk)
+        if (stateMachine.ReusableDate.shouldWalk)
         {
             stateMachine.ChangeState(stateMachine.WalkingState);
             return;

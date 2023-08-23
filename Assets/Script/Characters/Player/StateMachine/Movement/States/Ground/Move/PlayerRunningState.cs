@@ -14,7 +14,7 @@ namespace Movementsystem
         public override void Enter()
         {
             base.Enter();
-            speedModifier = 1f;
+            stateMachine.ReusableDate.MovementSpeedModifier = 1f;
         }
         #endregion
 
