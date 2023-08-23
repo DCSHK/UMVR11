@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Movementsystem
 {
-    public class PlayerSprintingState : PlayerMovementState
+    public class PlayerSprintingState : PlayerMovingState
     {
         public PlayerSprintingState(PlayerMovementStateMachine playerMovementStateMachine) : base(playerMovementStateMachine)
         {

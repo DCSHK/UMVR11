@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 
 namespace Movementsystem
 {
-    public class PlayerWalkingState : PlayerGroundedState
+    public class PlayerWalkingState : PlayerMovingState
     {
         public PlayerWalkingState(PlayerMovementStateMachine playerMovementStateMachine) : base(playerMovementStateMachine)
         {
@@ -18,9 +18,18 @@ namespace Movementsystem
         {
             base.Enter();
 
-            stateMachine.ReusableDate.MovementSpeedModifier = 0.225f;
+            stateMachine.ReusableDate.MovementSpeedModifier = movementDate.WalkDate.SpeedModifier;
         }
         #endregion
-        
+        #region Input Methods
+
+        protected override void OnWalkToggleStarted(InputAction.CallbackContext context)
+        {
+            base.OnWalkToggleStarted(context);
+            stateMachine.ChangeState(stateMachine.RunningState);
+        }
+
+        #endregion
+
     }
 }

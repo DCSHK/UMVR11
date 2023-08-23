@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Movementsystem
 {
-    public class PlayerGlidingState : PlayerGroundedState
+    public class PlayerGlidingState : PlayerMovingState
     {
         public PlayerGlidingState(PlayerMovementStateMachine playerMovementStateMachine) : base(playerMovementStateMachine)
         {

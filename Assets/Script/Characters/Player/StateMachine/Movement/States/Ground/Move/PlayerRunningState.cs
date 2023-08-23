@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 
 namespace Movementsystem
 {
-    public class PlayerRunningState : PlayerGroundedState
+    public class PlayerRunningState : PlayerMovingState
     {
         public PlayerRunningState(PlayerMovementStateMachine playerMovementStateMachine) : base(playerMovementStateMachine)
         {
@@ -14,7 +14,7 @@ namespace Movementsystem
         public override void Enter()
         {
             base.Enter();
-            stateMachine.ReusableDate.MovementSpeedModifier = 1f;
+            stateMachine.ReusableDate.MovementSpeedModifier = movementDate.RunDate.SpeedModifier;
         }
         #endregion
 

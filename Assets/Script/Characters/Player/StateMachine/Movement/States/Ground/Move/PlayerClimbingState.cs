@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Movementsystem
 {
-    public class PlayerClimbingState : PlayerGroundedState
+    public class PlayerClimbingState : PlayerMovingState
     {
         public PlayerClimbingState(PlayerMovementStateMachine playerMovementStateMachine) : base(playerMovementStateMachine)
         {
