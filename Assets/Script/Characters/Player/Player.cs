@@ -10,7 +10,12 @@ namespace Movementsystem
     {
         [field:Header("References")]
         [field:SerializeField] public PlayerSO Date { get; private set; }
-        public Rigidbody Rigidbody { get; private set; }
+
+        [field: Header("Collisions")]
+        [field:SerializeField] public CapsulecolliderUtility ColliderUtiliry { get; private set; }
+        [field: SerializeField] public PlayerLayerData LayerData { get; private set; }
+
+       public Rigidbody Rigidbody { get; private set; }
 
         public Transform MainCameraTransform { get; private set; }
         public PlayerInput Input { get; private set; }
@@ -19,8 +24,16 @@ namespace Movementsystem
         {
             Rigidbody = GetComponent<Rigidbody>();
             Input = GetComponent<PlayerInput>();
+            ColliderUtiliry.Initialize(gameObject);
+            ColliderUtiliry.CalculateCapsulecolliderDimensions();
             MainCameraTransform = Camera.main.transform;
             movementStateMachine = new PlayerMovementStateMachine(this);
+        }
+
+        private void OnValidate()
+        {
+            ColliderUtiliry.Initialize(gameObject);
+            ColliderUtiliry.CalculateCapsulecolliderDimensions();
         }
         private void Start()
         {
